@@ -21,6 +21,7 @@
 		644BB6942878448200FDAC0D /* MyBankViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB6932878448200FDAC0D /* MyBankViewController.swift */; };
 		644BB69628785F4900FDAC0D /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB69528785F4900FDAC0D /* InfoView.swift */; };
 		644BB6982878799100FDAC0D /* MyBankScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB6972878799100FDAC0D /* MyBankScrollView.swift */; };
+		AC999243287DB49B00FD3005 /* MonthlyExpensesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC999242287DB49B00FD3005 /* MonthlyExpensesCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		644BB6932878448200FDAC0D /* MyBankViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBankViewController.swift; sourceTree = "<group>"; };
 		644BB69528785F4900FDAC0D /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		644BB6972878799100FDAC0D /* MyBankScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBankScrollView.swift; sourceTree = "<group>"; };
+		AC999242287DB49B00FD3005 /* MonthlyExpensesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyExpensesCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				31516014287C16B000041653 /* CategoryCell.swift */,
+				AC999242287DB49B00FD3005 /* MonthlyExpensesCell.swift */,
 				644BB69528785F4900FDAC0D /* InfoView.swift */,
 				644BB6972878799100FDAC0D /* MyBankScrollView.swift */,
 				310B00A9287832A500A3BC17 /* LaunchScreen.storyboard */,
@@ -208,6 +211,7 @@
 				310B00B52878330400A3BC17 /* Model.swift in Sources */,
 				310A6E6228797B93005A9E6A /* TabBarViewController.swift in Sources */,
 				644BB6982878799100FDAC0D /* MyBankScrollView.swift in Sources */,
+				AC999243287DB49B00FD3005 /* MonthlyExpensesCell.swift in Sources */,
 				31516015287C16B000041653 /* CategoryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

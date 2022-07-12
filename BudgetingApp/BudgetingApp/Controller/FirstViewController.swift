@@ -27,7 +27,6 @@ class FirstViewController: UIViewController {
                  expense: 1, bonus: 0, color: UIColor(named: "purple")!),
         Category(name: "Мебель", imageName: "chair.lounge.fill", expense: 4, bonus: 0, color: UIColor(named: "corall")!),
         Category(name: "Другое", imageName: "rays", expense: 3, bonus: 0, color: .systemGray3)
-
     ]
     
     let totalExpensesString = "120,000 тг"
