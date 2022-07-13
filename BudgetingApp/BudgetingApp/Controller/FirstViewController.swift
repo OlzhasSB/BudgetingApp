@@ -10,12 +10,26 @@ import Charts
 
 class FirstViewController: UIViewController {
     
-    let viewChart = UIView()
-    let expensesChart = PieChartView()
-    let expensesTable = UITableView()
+    private let backgroundViewForChart: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 50
+        return view
+    }()
+    private let expensesChart: PieChartView = {
+        let chart = PieChartView()
+        chart.animate(yAxisDuration: 1.5, easingOption: .easeInOutQuad)
+        return chart
+    }()
+    private let expensesTable: UITableView = {
+        let table = UITableView()
+        table.layer.cornerRadius = 30
+        table.showsVerticalScrollIndicator = false
+        return table
+    }()
 
     var categories: [Category] = [
-        Category(name: "Фитнес и SPA", imageName: "dumbbell.fill", expense: 0, bonus: 0, color: UIColor(named: "red")!),
+        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
         Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
         Category(name: "Салоны красоты и косметики", imageName: "sparkles", expense: 3, bonus: 0, color: UIColor(named: "yellow")!),
         Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
@@ -25,10 +39,9 @@ class FirstViewController: UIViewController {
         Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!),
         Category(name: "Путешествия", imageName: "airplane.circle.fill",
                  expense: 1, bonus: 0, color: UIColor(named: "purple")!),
-        Category(name: "Мебель", imageName: "chair.lounge.fill", expense: 4, bonus: 0, color: UIColor(named: "corall")!),
+        Category(name: "Мебель", imageName: "bed.double.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "corall")!),
         Category(name: "Другое", imageName: "rays", expense: 3, bonus: 0, color: .systemGray3)
     ]
-    
     let totalExpensesString = "120,000 тг"
     let bonusString = "1,578 бонусов"
     
@@ -37,23 +50,23 @@ class FirstViewController: UIViewController {
         view.backgroundColor = .systemGray6
         
         makeConstraints()
-        loadCategories()
-        sortByExpense()
+        sortByDecreaseExpenses()
+        
         configureChart()
+        configureTable()
+    }
+    
+    private func sortByDecreaseExpenses() {
+        categories = categories.sorted(by: { $0.expense > $1.expense })
+    }
+    
+    private func configureTable() {
         expensesTable.dataSource = self
         expensesTable.delegate = self
         expensesTable.register(CategoryCell.self, forCellReuseIdentifier: "categoryCell")
     }
     
-    func sortByExpense() {
-        categories = categories.sorted(by: { $0.expense > $1.expense })
-    }
-    
-    func loadCategories() {
-        
-    }
-    
-    func configureChart() {
+    private func configureChart() {
         var dataEntries: [PieChartDataEntry] = []
         var colors: [UIColor] = []
         
@@ -76,36 +89,31 @@ class FirstViewController: UIViewController {
         expensesChart.delegate = self
     }
     
-    func makeConstraints() {
-        view.addSubview(viewChart)
-        viewChart.translatesAutoresizingMaskIntoConstraints = false
-        viewChart.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        viewChart.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        viewChart.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        viewChart.heightAnchor.constraint(equalToConstant: 350).isActive = true
-        viewChart.backgroundColor = .white
-        viewChart.layer.cornerRadius = 50
+    private func makeConstraints() {
+        view.addSubview(backgroundViewForChart)
+        backgroundViewForChart.translatesAutoresizingMaskIntoConstraints = false
+        backgroundViewForChart.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        backgroundViewForChart.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        backgroundViewForChart.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        backgroundViewForChart.heightAnchor.constraint(equalToConstant: 350).isActive = true
         
-        viewChart.addSubview(expensesChart)
+        backgroundViewForChart.addSubview(expensesChart)
         expensesChart.translatesAutoresizingMaskIntoConstraints = false
-        expensesChart.topAnchor.constraint(equalTo: viewChart.topAnchor).isActive = true
-        expensesChart.leadingAnchor.constraint(equalTo: viewChart.leadingAnchor).isActive = true
-        expensesChart.trailingAnchor.constraint(equalTo: viewChart.trailingAnchor).isActive = true
+        expensesChart.topAnchor.constraint(equalTo: backgroundViewForChart.topAnchor).isActive = true
+        expensesChart.leadingAnchor.constraint(equalTo: backgroundViewForChart.leadingAnchor).isActive = true
+        expensesChart.trailingAnchor.constraint(equalTo: backgroundViewForChart.trailingAnchor).isActive = true
         expensesChart.heightAnchor.constraint(equalToConstant: 350).isActive = true
-        expensesChart.animate(yAxisDuration: 1.5, easingOption: .easeInOutQuad)
 
         view.addSubview(expensesTable)
         expensesTable.translatesAutoresizingMaskIntoConstraints = false
-        expensesTable.topAnchor.constraint(equalTo: viewChart.bottomAnchor, constant: 16).isActive = true
+        expensesTable.topAnchor.constraint(equalTo: backgroundViewForChart.bottomAnchor, constant: 16).isActive = true
         expensesTable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         expensesTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         expensesTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        expensesTable.layer.cornerRadius = 30
-        expensesTable.showsVerticalScrollIndicator = false
     }
     
 }
-
+// MARK: - TableView Delegates
 extension FirstViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categories.count
@@ -125,6 +133,7 @@ extension FirstViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+// MARK: - CharView Delegate
 extension FirstViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let index = Int(highlight.x)

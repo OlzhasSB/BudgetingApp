@@ -9,14 +9,22 @@ import UIKit
 
 class CategoryCell: UITableViewCell {
     
-    let nameLabel = UILabel()
-    let image = UIImageView()
-    let expensesLabel = UILabel()
-    let bonusLabel = UILabel()
+    private let image = UIImageView()
+    private let expensesLabel = UILabel()
+    private let bonusLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = .systemGreen
+        return label
+    }()
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        return label
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         makeConstraints()
     }
     
@@ -30,11 +38,11 @@ class CategoryCell: UITableViewCell {
         expensesLabel.text = "\(category.expense) тг"
         
         let config = UIImage.SymbolConfiguration(pointSize: 28)
-        image.image = UIImage(systemName: category.imageName, withConfiguration: config)
         image.tintColor = category.color
+        image.image = UIImage(systemName: category.imageName, withConfiguration: config)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         contentView.addSubview(expensesLabel)
         expensesLabel.translatesAutoresizingMaskIntoConstraints = false
         expensesLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
@@ -45,8 +53,6 @@ class CategoryCell: UITableViewCell {
         bonusLabel.topAnchor.constraint(equalTo: expensesLabel.bottomAnchor, constant: 5).isActive = true
         bonusLabel.trailingAnchor.constraint(equalTo: expensesLabel.trailingAnchor).isActive = true
         bonusLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
-        bonusLabel.font = UIFont.systemFont(ofSize: 15)
-        bonusLabel.textColor = .systemGreen
         
         contentView.addSubview(image)
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -58,8 +64,6 @@ class CategoryCell: UITableViewCell {
         nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60).isActive = true
         nameLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        nameLabel.numberOfLines = 0
-
     }
 
 }

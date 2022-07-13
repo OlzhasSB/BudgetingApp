@@ -19,7 +19,6 @@ class TabBarViewController: UITabBarController {
     private func configureTabBarItems() {
         self.tabBar.layer.borderWidth = 1.5
         self.tabBar.layer.borderColor = UIColor.systemGray6.cgColor
-//        self.tabBar.backgroundColor = .systemGray6
         
         let vc1 = FirstViewController()
         let image1 = UIImage(systemName: "chart.pie")

@@ -10,11 +10,35 @@ import Charts
 
 class SecondViewController: UIViewController {
     
+//    private let t
     private let historyChart = BarChartView()
-    private let backgroundViewForChart = UIView()
-    private let forecastedExpensesTable = UITableView()
-    private let monthlyLabel = UILabel()
-    private let button = UIButton()
+    private let backgroundViewForChart: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 40
+        return view
+    }()
+    private let forecastedExpensesTable: UITableView = {
+        let table = UITableView()
+        table.layer.cornerRadius = 30
+        table.showsVerticalScrollIndicator = false
+        return table
+    }()
+    private let monthlyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ежемесячные расходы:"
+        return label
+    }()
+    private let button: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 25
+        
+        let config = UIImage.SymbolConfiguration(pointSize: 35)
+        button.setImage(UIImage(systemName: "plus", withConfiguration: config), for: .normal)
+        button.tintColor = .orange
+        button.addTarget(self, action: #selector(addButtonPressed), for: .touchUpInside)
+        return button
+    }()
     
     let data = [
         [0,5],
@@ -24,31 +48,25 @@ class SecondViewController: UIViewController {
         [4,6],
         [5,9]
     ]
-    
     var monthlyExpenses: [Category] = [
-        Category(name: "Фитнес и SPA", imageName: "dumbbell.fill", expense: 0, bonus: 0, color: UIColor(named: "red")!),
+        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
         Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
         Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
         Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: 5, bonus: 0, color: UIColor(named: "azure")!),
         Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!)
     ]
-    
-    let categories = ["Фитнес и SPA", "Такси", "Салоны красоты и косметики", "Кафе и рестораны", "Медицинские услуги", "Онлайн кино и музыка", "Одежда и обувь", "Игровые сервисы", "Путешествия", "Мебель", "Другое"]
-    
     let months = ["January", "February", "March", "April", "May", "June"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        forecastedExpensesTable.register(MonthlyExpensesCell.self, forCellReuseIdentifier: "monthlyExpensesCell")
-        forecastedExpensesTable.delegate = self
-        forecastedExpensesTable.dataSource = self
+
         makeConstraints()
         configureChart()
+        configureTable()
     }
     
     @objc private func addButtonPressed() {
-        
         UIView.animate(withDuration: 0.5, animations: { [self] in
             button.transform = CGAffineTransform(rotationAngle: CGFloat.pi*2/3)
         })
@@ -80,21 +98,37 @@ class SecondViewController: UIViewController {
         expenseField.setRightPaddingPoints(10)
         expenseField.becomeFirstResponder()
         expenseField.clearButtonMode = .whileEditing
+        expenseField.delegate = self
         vc.view.addSubview(expenseField)
         
         let editRadiusAlert = UIAlertController(title: "Добавить расход", message: nil, preferredStyle: .alert)
         editRadiusAlert.setValue(vc, forKey: "contentViewController")
+        
         editRadiusAlert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [self] _ in
             if expenseField.hasText {
-                let selectedCategory = categories[pickerView.selectedRow(inComponent: 0)]
-                let newExpense = Category(name: selectedCategory, imageName: "", expense: Double(expenseField.text!)!, bonus: 0, color: .red)
+                
+                for index in 0..<monthlyExpenses.count {
+                    if monthlyExpenses[index].name == Category.categories[pickerView.selectedRow(inComponent: 0)].name {
+                        monthlyExpenses[index].expense += Double(expenseField.text!)!
+                        forecastedExpensesTable.reloadData()
+                        UIView.animate(withDuration: 0.5, animations: { [self] in
+                            button.transform = .identity
+                        })
+                        return
+                    }
+                }
+                
+                let selectedCategory = Category.categories[pickerView.selectedRow(inComponent: 0)]
+                let newExpense = Category(name: selectedCategory.name, imageName: selectedCategory.imageName, expense: Double(expenseField.text!)!, bonus: 0, color: selectedCategory.color)
                 monthlyExpenses.append(newExpense)
                 forecastedExpensesTable.reloadData()
+                
                 UIView.animate(withDuration: 0.5, animations: { [self] in
                     button.transform = .identity
                 })
             }
         }))
+        
         editRadiusAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
             UIView.animate(withDuration: 0.5, animations: { [self] in
                 button.transform = .identity
@@ -104,7 +138,13 @@ class SecondViewController: UIViewController {
         self.present(editRadiusAlert, animated: true)
     }
     
-    func configureChart() {
+    private func configureTable() {
+        forecastedExpensesTable.register(MonthlyExpensesCell.self, forCellReuseIdentifier: "monthlyExpensesCell")
+        forecastedExpensesTable.delegate = self
+        forecastedExpensesTable.dataSource = self
+    }
+    
+    private func configureChart() {
         var dataEntries: [BarChartDataEntry] = []
         let color: [UIColor] = [UIColor(named: "orange")!]
 
@@ -126,9 +166,9 @@ class SecondViewController: UIViewController {
         historyChart.moveViewToX(Double(data.count - 1))
 
         // Hiding grid
-//        historyChart.leftAxis.enabled = false
+        historyChart.leftAxis.enabled = false
         historyChart.rightAxis.enabled = false
-//        historyChart.xAxis.enabled = false
+        historyChart.xAxis.enabled = false
 
         // Setting left axis
         historyChart.leftAxis.setLabelCount(6, force: true)
@@ -160,8 +200,6 @@ class SecondViewController: UIViewController {
         backgroundViewForChart.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         backgroundViewForChart.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         backgroundViewForChart.heightAnchor.constraint(equalToConstant: 350).isActive = true
-        backgroundViewForChart.backgroundColor = .white
-        backgroundViewForChart.layer.cornerRadius = 40
         
         backgroundViewForChart.addSubview(historyChart)
         historyChart.translatesAutoresizingMaskIntoConstraints = false
@@ -175,8 +213,6 @@ class SecondViewController: UIViewController {
         monthlyLabel.topAnchor.constraint(equalTo: backgroundViewForChart.bottomAnchor, constant: 16).isActive = true
         monthlyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         monthlyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-//        monthlyLabel.bottomAnchor.constraint(equalTo: fore, constant: -16).isActive = true
-        monthlyLabel.text = "Ежемесячные расходы:"
         
         view.addSubview(forecastedExpensesTable)
         forecastedExpensesTable.translatesAutoresizingMaskIntoConstraints = false
@@ -184,8 +220,6 @@ class SecondViewController: UIViewController {
         forecastedExpensesTable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         forecastedExpensesTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         forecastedExpensesTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-        forecastedExpensesTable.layer.cornerRadius = 30
-        forecastedExpensesTable.showsVerticalScrollIndicator = false
         
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -193,13 +227,12 @@ class SecondViewController: UIViewController {
         button.bottomAnchor.constraint(equalTo: forecastedExpensesTable.bottomAnchor, constant: -16).isActive = true
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        button.layer.cornerRadius = 25
-        button.setImage(UIImage(named: "add"), for: .normal)
-        button.addTarget(self, action: #selector(addButtonPressed), for: .touchUpInside)
+
     }
     
 }
 
+//MARK: - TableView Delegates
 extension SecondViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return monthlyExpenses.count
@@ -212,13 +245,14 @@ extension SecondViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+// MARK: - PickerView Delegates
 extension SecondViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return categories.count
+        return Category.categories.count
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
@@ -235,7 +269,7 @@ extension SecondViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             label = UILabel(frame: CGRect(x: 0, y: 0, width: pickerView.frame.width, height: 400))
         }
 
-        label.text = categories[row]
+        label.text = Category.categories[row].name
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.font = UIFont(name: "Arial", size: 20)
@@ -247,6 +281,16 @@ extension SecondViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
 }
 
+// MARK: - Setting TextField to accept only numbers
+extension SecondViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = CharacterSet.decimalDigits
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
+    }
+}
+
+// MARK: - Setting TextField padding
 extension UITextField {
     func setRightPaddingPoints(_ amount:CGFloat){
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))

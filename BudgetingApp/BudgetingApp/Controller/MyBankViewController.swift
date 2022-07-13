@@ -10,7 +10,6 @@ import UIKit
 class MyBankViewController: UIViewController {
     
     let button = UIButton()
-
 	let scrollView = MyBankScrollView()
     
 	override func viewDidLoad() {
