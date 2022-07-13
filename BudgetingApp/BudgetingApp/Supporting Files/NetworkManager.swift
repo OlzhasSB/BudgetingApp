@@ -98,10 +98,11 @@ class NetworkManager {
     }
     
         func getGamesPurchases() {
-            guard let url = URL(string: "http://localhost:8080/user/info") else {
+            guard let url = URL(string: "http://localhost:8080/user/games") else {
 //                DispatchQueue.main.async {
 //                    completion(.failure(.invalidURL))
 //                }
+                print("Invalid URl")
                 return
             }
     
@@ -116,7 +117,6 @@ class NetworkManager {
                     print("No data")
                     return
                 }
-                
                 guard let purchases = try? JSONDecoder().decode(PurchaseResponse.self, from: data) else {
 //                    DispatchQueue.main.async {
 //                        completion(.failure(.decodingError))

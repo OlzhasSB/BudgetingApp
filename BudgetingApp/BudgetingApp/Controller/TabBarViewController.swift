@@ -10,8 +10,8 @@ import UIKit
 class TabBarViewController: UITabBarController {
 
     private var networkManager = NetworkManager.shared
-    let username = "test"
-    let password = "test"
+    let username = "Olzhas"
+    let password = "123"
     
     override func viewDidLoad() {
         super.viewDidLoad()
