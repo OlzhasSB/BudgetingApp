@@ -10,7 +10,8 @@ import Charts
 
 class SecondViewController: UIViewController {
     
-//    private let t
+    private var networkManager = NetworkManager.shared
+    
     private let historyChart = BarChartView()
     private let backgroundViewForChart: UIView = {
         let view = UIView()
@@ -64,6 +65,7 @@ class SecondViewController: UIViewController {
         makeConstraints()
         configureChart()
         configureTable()
+        networkManager.getGamesPurchases()
     }
     
     @objc private func addButtonPressed() {

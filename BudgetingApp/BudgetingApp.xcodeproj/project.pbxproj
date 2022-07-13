@@ -18,6 +18,7 @@
 		310B00B52878330400A3BC17 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B00B42878330400A3BC17 /* Model.swift */; };
 		31516015287C16B000041653 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31516014287C16B000041653 /* CategoryCell.swift */; };
 		317BDFC52879945000E1CF0F /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 317BDFC42879945000E1CF0F /* Charts */; };
+		31B2EB54287ED01A00B03378 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B2EB53287ED01A00B03378 /* NetworkManager.swift */; };
 		644BB6942878448200FDAC0D /* MyBankViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB6932878448200FDAC0D /* MyBankViewController.swift */; };
 		644BB69628785F4900FDAC0D /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB69528785F4900FDAC0D /* InfoView.swift */; };
 		644BB6982878799100FDAC0D /* MyBankScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644BB6972878799100FDAC0D /* MyBankScrollView.swift */; };
@@ -37,6 +38,7 @@
 		310B00AC287832A500A3BC17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		310B00B42878330400A3BC17 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		31516014287C16B000041653 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
+		31B2EB53287ED01A00B03378 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		644BB6932878448200FDAC0D /* MyBankViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBankViewController.swift; sourceTree = "<group>"; };
 		644BB69528785F4900FDAC0D /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		644BB6972878799100FDAC0D /* MyBankScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBankScrollView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			children = (
 				310B009E287832A400A3BC17 /* AppDelegate.swift */,
 				310B00A0287832A400A3BC17 /* SceneDelegate.swift */,
+				31B2EB53287ED01A00B03378 /* NetworkManager.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				310A6E5E28797B45005A9E6A /* SecondViewController.swift in Sources */,
 				310A6E6028797B4E005A9E6A /* ThirdViewController.swift in Sources */,
 				310B00A3287832A400A3BC17 /* FirstViewController.swift in Sources */,
+				31B2EB54287ED01A00B03378 /* NetworkManager.swift in Sources */,
 				310B009F287832A400A3BC17 /* AppDelegate.swift in Sources */,
 				310B00A1287832A400A3BC17 /* SceneDelegate.swift in Sources */,
 				644BB6942878448200FDAC0D /* MyBankViewController.swift in Sources */,
