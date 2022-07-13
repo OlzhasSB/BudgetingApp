@@ -10,6 +10,14 @@ import Charts
 
 class SecondViewController: UIViewController {
     
+    private var networkManager = NetworkManager.shared
+    
+    private let historyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Расходы за прошлые месяцы:"
+        label.font = UIFont.boldSystemFont(ofSize: 18.0)
+        return label
+    }()
     private let historyChart = BarChartView()
     private let backgroundViewForChart: UIView = {
         let view = UIView()
@@ -26,6 +34,7 @@ class SecondViewController: UIViewController {
     private let monthlyLabel: UILabel = {
         let label = UILabel()
         label.text = "Ежемесячные расходы:"
+        label.font = UIFont.boldSystemFont(ofSize: 18.0)
         return label
     }()
     private let button: UIButton = {
@@ -38,32 +47,44 @@ class SecondViewController: UIViewController {
         button.addTarget(self, action: #selector(addButtonPressed), for: .touchUpInside)
         return button
     }()
+    private let totalLabel = UILabel()
     
     let data = [
-        [0,5],
-        [1,4],
-        [2,7],
-        [3,1],
-        [4,6],
-        [5,9]
+        [0,121560],
+        [1,106090],
+        [2,143420],
+        [3,95080],
+        [4,169010],
+        [5,109050]
     ]
-    var monthlyExpenses: [Category] = [
-//        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
-//        Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
-//        Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
-//        Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: 5, bonus: 0, color: UIColor(named: "azure")!),
-//        Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!)
-    ]
+    var monthlyExpenses: [Category] = [] {
+        didSet {
+            var sum = 0.0
+            for index in 0..<monthlyExpenses.count {
+                sum += monthlyExpenses[index].expense
+            }
+            let boldAttribute = [
+                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18.0)
+            ]
+            let regularAttribute = [
+               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.0)
+            ]
+            let boldText = NSAttributedString(string: "Итого:", attributes: boldAttribute)
+            let regularText = NSAttributedString(string: "  \(sum)", attributes: regularAttribute)
+            let newString = NSMutableAttributedString()
+            newString.append(boldText)
+            newString.append(regularText)
+            totalLabel.attributedText = newString
+        }
+    }
     let months = ["January", "February", "March", "April", "May", "June"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        
+        loadCategories()
         makeConstraints()
-        configureChart()
         configureTable()
-        
     }
     
     @objc private func addButtonPressed() {
@@ -110,6 +131,7 @@ class SecondViewController: UIViewController {
                 for index in 0..<monthlyExpenses.count {
                     if monthlyExpenses[index].name == Category.categories[pickerView.selectedRow(inComponent: 0)].name {
                         monthlyExpenses[index].expense += Double(expenseField.text!)!
+                        sortByDecreaseExpenses()
                         forecastedExpensesTable.reloadData()
                         UIView.animate(withDuration: 0.5, animations: { [self] in
                             button.transform = .identity
@@ -121,6 +143,7 @@ class SecondViewController: UIViewController {
                 let selectedCategory = Category.categories[pickerView.selectedRow(inComponent: 0)]
                 let newExpense = Category(name: selectedCategory.name, imageName: selectedCategory.imageName, expense: Double(expenseField.text!)!, bonus: 0, color: selectedCategory.color)
                 monthlyExpenses.append(newExpense)
+                sortByDecreaseExpenses()
                 forecastedExpensesTable.reloadData()
                 
                 UIView.animate(withDuration: 0.5, animations: { [self] in
@@ -136,6 +159,18 @@ class SecondViewController: UIViewController {
         }))
         
         self.present(editRadiusAlert, animated: true)
+    }
+    
+    private func sortByDecreaseExpenses() {
+        monthlyExpenses = monthlyExpenses.sorted(by: { $0.expense > $1.expense })
+    }
+    
+    private func loadCategories() {
+        loadTaxiCategory()
+        loadRestaurantsCategory()
+        loadGamesCategory()
+        loadFitnessCategory()
+        loadCinemaMusicCategory()
     }
     
     private func configureTable() {
@@ -194,12 +229,19 @@ class SecondViewController: UIViewController {
     }
     
     private func makeConstraints() {
+        view.addSubview(historyLabel)
+        historyLabel.translatesAutoresizingMaskIntoConstraints = false
+        historyLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        historyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        historyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        historyLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        
         view.addSubview(backgroundViewForChart)
         backgroundViewForChart.translatesAutoresizingMaskIntoConstraints = false
-        backgroundViewForChart.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        backgroundViewForChart.topAnchor.constraint(equalTo: historyLabel.bottomAnchor, constant: 16).isActive = true
         backgroundViewForChart.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         backgroundViewForChart.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        backgroundViewForChart.heightAnchor.constraint(equalToConstant: 350).isActive = true
+        backgroundViewForChart.heightAnchor.constraint(equalToConstant: 280).isActive = true
         
         backgroundViewForChart.addSubview(historyChart)
         historyChart.translatesAutoresizingMaskIntoConstraints = false
@@ -213,13 +255,14 @@ class SecondViewController: UIViewController {
         monthlyLabel.topAnchor.constraint(equalTo: backgroundViewForChart.bottomAnchor, constant: 16).isActive = true
         monthlyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         monthlyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        monthlyLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         view.addSubview(forecastedExpensesTable)
         forecastedExpensesTable.translatesAutoresizingMaskIntoConstraints = false
         forecastedExpensesTable.topAnchor.constraint(equalTo: monthlyLabel.bottomAnchor, constant: 16).isActive = true
         forecastedExpensesTable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         forecastedExpensesTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        forecastedExpensesTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
+        forecastedExpensesTable.heightAnchor.constraint(equalToConstant: 300).isActive = true
         
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -227,9 +270,12 @@ class SecondViewController: UIViewController {
         button.bottomAnchor.constraint(equalTo: forecastedExpensesTable.bottomAnchor, constant: -16).isActive = true
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true
-
+        
+        view.addSubview(totalLabel)
+        totalLabel.translatesAutoresizingMaskIntoConstraints = false
+        totalLabel.topAnchor.constraint(equalTo: forecastedExpensesTable.bottomAnchor, constant: 16).isActive = true
+        totalLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -55).isActive = true
     }
-    
 }
 
 //MARK: - TableView Delegates
@@ -242,6 +288,13 @@ extension SecondViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "monthlyExpensesCell", for: indexPath) as! MonthlyExpensesCell
         cell.assignParameters(monthlyExpenses[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            monthlyExpenses.remove(at: indexPath.row)
+            forecastedExpensesTable.deleteRows(at: [indexPath], with: .fade)
+        }
     }
 }
 
@@ -296,5 +349,71 @@ extension UITextField {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))
         self.rightView = paddingView
         self.rightViewMode = .always
+    }
+}
+
+// MARK: - Loading monthly expenses
+extension SecondViewController {
+    func loadTaxiCategory() {
+        networkManager.getPurchases(path: "/taxi") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Такси", imageName: "car.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "orange")!)
+                self.monthlyExpenses.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadRestaurantsCategory() {
+        networkManager.getPurchases(path: "/restaurants") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "mellon")!)
+                self.monthlyExpenses.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadGamesCategory() {
+        networkManager.getPurchases(path: "/games") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "berry")!)
+                self.monthlyExpenses.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadFitnessCategory() {
+        networkManager.getPurchases(path: "/fitness") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "red")!)
+                self.monthlyExpenses.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadCinemaMusicCategory() {
+        networkManager.getPurchases(path: "/cinema-and-music") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "azure")!)
+                self.monthlyExpenses.append(category)
+                self.sortByDecreaseExpenses()
+                self.configureChart()
+                self.forecastedExpensesTable.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

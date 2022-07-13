@@ -10,8 +10,8 @@ import UIKit
 class MyBankViewController: UIViewController {
     
     private var networkManager = NetworkManager.shared
-    let username = "Olzhas"
-    let password = "123"
+    let username = "test"
+    let password = "test"
     
     let button = UIButton()
 	let scrollView = MyBankScrollView()

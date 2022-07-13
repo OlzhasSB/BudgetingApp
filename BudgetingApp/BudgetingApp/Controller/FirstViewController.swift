@@ -271,7 +271,7 @@ extension FirstViewController {
                 self.categories.append(category)
                 self.sortByDecreaseExpenses()
                 self.configureChart()
-                self.expensesTable.reloadData()
+                self.expensesTable.reloadData()                
             case .failure(let error):
                 print(error.localizedDescription)
             }
