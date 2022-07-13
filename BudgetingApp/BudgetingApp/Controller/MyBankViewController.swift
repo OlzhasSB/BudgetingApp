@@ -9,6 +9,10 @@ import UIKit
 
 class MyBankViewController: UIViewController {
     
+    private var networkManager = NetworkManager.shared
+    let username = "Olzhas"
+    let password = "123"
+    
     let button = UIButton()
 	let scrollView = MyBankScrollView()
     
@@ -17,6 +21,8 @@ class MyBankViewController: UIViewController {
 		view.backgroundColor = .systemBackground
 		configureNC()
 		configure()
+        
+        networkManager.auth(username: username, password: password)
 	}
 
 	func configureNC() {

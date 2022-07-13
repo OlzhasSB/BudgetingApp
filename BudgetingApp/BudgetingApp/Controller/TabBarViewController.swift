@@ -8,18 +8,11 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
-
-    private var networkManager = NetworkManager.shared
-    let username = "Olzhas"
-    let password = "123"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-    
         configureTabBarItems()
-        
-        networkManager.auth(username: username, password: password)
     }
     
     private func configureTabBarItems() {
@@ -41,3 +34,5 @@ class TabBarViewController: UITabBarController {
     }
 
 }
+
+

@@ -10,8 +10,6 @@ import Charts
 
 class SecondViewController: UIViewController {
     
-    private var networkManager = NetworkManager.shared
-    
     private let historyChart = BarChartView()
     private let backgroundViewForChart: UIView = {
         let view = UIView()
@@ -50,22 +48,22 @@ class SecondViewController: UIViewController {
         [5,9]
     ]
     var monthlyExpenses: [Category] = [
-        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
-        Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
-        Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
-        Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: 5, bonus: 0, color: UIColor(named: "azure")!),
-        Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!)
+//        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
+//        Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
+//        Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
+//        Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: 5, bonus: 0, color: UIColor(named: "azure")!),
+//        Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!)
     ]
     let months = ["January", "February", "March", "April", "May", "June"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-
+        
         makeConstraints()
         configureChart()
         configureTable()
-        networkManager.getGamesPurchases()
+        
     }
     
     @objc private func addButtonPressed() {

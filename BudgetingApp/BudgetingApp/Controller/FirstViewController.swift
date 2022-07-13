@@ -10,6 +10,8 @@ import Charts
 
 class FirstViewController: UIViewController {
     
+    private var networkManager = NetworkManager.shared
+    
     private let backgroundViewForChart: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -28,32 +30,30 @@ class FirstViewController: UIViewController {
         return table
     }()
 
-    var categories: [Category] = [
-        Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: 0, bonus: 0, color: UIColor(named: "red")!),
-        Category(name: "Такси", imageName: "car.circle.fill", expense: 2, bonus: 0, color: UIColor(named: "orange")!),
-        Category(name: "Салоны красоты и косметики", imageName: "sparkles", expense: 3, bonus: 0, color: UIColor(named: "yellow")!),
-        Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "mellon")!),
-        Category(name: "Медицинские услуги", imageName: "pills.circle.fill", expense: 10, bonus: 0, color: UIColor(named: "salad")!),
-        Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: 5, bonus: 0, color: UIColor(named: "azure")!),
-        Category(name: "Одежда и обувь", imageName: "bag.fill", expense: 9, bonus: 0, color: UIColor(named: "blue")!),
-        Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: 6, bonus: 0, color: UIColor(named: "berry")!),
-        Category(name: "Путешествия", imageName: "airplane.circle.fill",
-                 expense: 1, bonus: 0, color: UIColor(named: "purple")!),
-        Category(name: "Мебель", imageName: "bed.double.circle.fill", expense: 4, bonus: 0, color: UIColor(named: "corall")!),
-        Category(name: "Другое", imageName: "rays", expense: 3, bonus: 0, color: .systemGray3)
-    ]
+    var categories: [Category] = []
     let totalExpensesString = "120,000 тг"
     let bonusString = "1,578 бонусов"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
-        
+        loadCategories()
         makeConstraints()
-        sortByDecreaseExpenses()
-        
-        configureChart()
         configureTable()
+    }
+
+    private func loadCategories() {
+        loadTravelCategory()
+        loadTaxiCategory()
+        loadRestaurantsCategory()
+        loadOthersCategory()
+        loadMedicineCategory()
+        loadGamesCategory()
+        loadFurnitureCategory()
+        loadFitnessCategory()
+        loadClothesCategory()
+        loadCinemaMusicCategory()
+        loadBeautyCategory()
     }
     
     private func sortByDecreaseExpenses() {
@@ -140,3 +140,143 @@ extension FirstViewController: ChartViewDelegate {
         expensesTable.selectRow(at: IndexPath(item: index, section: 0), animated: true, scrollPosition: .middle)
     }
 }
+
+// MARK: - Network requests
+extension FirstViewController {
+    func loadTravelCategory() {
+        networkManager.getPurchases(path: "/travel") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Путешествия", imageName: "airplane.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "purple")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadTaxiCategory() {
+        networkManager.getPurchases(path: "/taxi") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Такси", imageName: "car.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "orange")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadRestaurantsCategory() {
+        networkManager.getPurchases(path: "/restaurants") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Кафе и рестораны", imageName: "fork.knife.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "mellon")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadOthersCategory() {
+        networkManager.getPurchases(path: "/no-category") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Другое", imageName: "rays", expense: purchases.expenditure, bonus: purchases.bonus, color: .systemGray3)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadMedicineCategory() {
+        networkManager.getPurchases(path: "/medicine") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Медицинские услуги", imageName: "pills.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "salad")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadGamesCategory() {
+        networkManager.getPurchases(path: "/games") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Игровые сервисы", imageName: "gamecontroller.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "berry")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadFurnitureCategory() {
+        networkManager.getPurchases(path: "/furniture") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Мебель", imageName: "bed.double.circle.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "corall")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadFitnessCategory() {
+        networkManager.getPurchases(path: "/fitness") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Фитнес и SPA", imageName: "figure.walk", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "red")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadClothesCategory() {
+        networkManager.getPurchases(path: "/clothes") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Одежда и обувь", imageName: "bag.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "blue")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadCinemaMusicCategory() {
+        networkManager.getPurchases(path: "/cinema-and-music") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Онлайн кино и музыка", imageName: "music.note.tv.fill", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "azure")!)
+                self.categories.append(category)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadBeautyCategory() {
+        networkManager.getPurchases(path: "/beauty-and-cosmetics") { (result) in
+            switch result {
+            case .success(let purchases):
+                let category = Category(name: "Салоны красоты и косметики", imageName: "sparkles", expense: purchases.expenditure, bonus: purchases.bonus, color: UIColor(named: "yellow")!)
+                self.categories.append(category)
+                self.sortByDecreaseExpenses()
+                self.configureChart()
+                self.expensesTable.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+}
+

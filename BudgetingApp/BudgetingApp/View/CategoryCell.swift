@@ -34,8 +34,8 @@ class CategoryCell: UITableViewCell {
     
     func assignParameters(_ category: Category) {
         nameLabel.text = category.name
-        bonusLabel.text = "\(category.bonus) Б"
-        expensesLabel.text = "\(category.expense) тг"
+        bonusLabel.text = "\(Int(category.bonus)) Б"
+        expensesLabel.text = "\(Int(category.expense)) тг"
         
         let config = UIImage.SymbolConfiguration(pointSize: 28)
         image.tintColor = category.color
